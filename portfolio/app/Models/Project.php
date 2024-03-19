@@ -21,11 +21,10 @@ class Project extends Model
     // Phương thức để lấy liên kết 
     public function image()
     {
-        // 'parent_id' là khóa ngoại trong bảng 'images' tham chiếu đến bảng 'projects'
-        return $this->hasOne(Image::class, 'parent_id');
+        return $this->belongsTo(Image::class, 'image_id');
     }
 
     public static function getAll() {
-        return Project::with('skills')->get();
+        return Project::with('skills', 'image')->get();
     }
 }

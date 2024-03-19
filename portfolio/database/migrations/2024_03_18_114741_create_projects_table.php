@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\Image;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->text('linkgitHub')->nullable();
-
+            $table->foreignIdFor(Image::class)->nullable();
             $table->timestamps();
         });
     }

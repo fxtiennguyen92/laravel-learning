@@ -11,15 +11,15 @@ class Image extends Model
     protected $table = 'images';
     protected $primaryKey = 'id';
     protected $fillable = ['category', 'src'];
+    public $timestamps = false;
 
     // Phương thức để lấy dự án mà hình ảnh thuộc về
     public function project()
     {
-        // 'parent_id' là khóa ngoại trong bảng 'images' tham chiếu đến bảng 'projects'
-        return $this->belongsTo(Project::class, 'parent_id');
+        return $this->hasOne(Project::class, 'image_id');
     }
     public function banner()
     {
-        return $this->belongsTo(Project::class, 'parent_id');
+        return $this->belongsTo(Banner::class, 'parent_id');
     }
 }
