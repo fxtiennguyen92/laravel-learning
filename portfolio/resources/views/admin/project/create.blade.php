@@ -11,16 +11,30 @@
 <body>
     <form action="/project" method="post">
         @csrf
-        <input type="text" name="title" placeholder="project name">
+        <input type="text" name="title" placeholder="project name" value="{{ old('title') }}">
+        @error('title')
+            <div>{{ $message }}</div>
+        @enderror
         <input type="text" name="description" placeholder="description">
+
         <div id="skillsContainer">
             <label>Skill:</label>
-            {{-- skills[]  mỗi khi form được gửi đi, dữ liệu từ các trường này sẽ được gửi dưới dạng một mảng của các giá trị skills --}}
-            <input type="text" name="skills[]">
+            @if (old('skills'))
+                {{-- old trả về giá trị cũ của skill  --}}
+                {{--'skills', [''] đảm bảo rằng ít nhất một ô nhập liệu được hiển thị --}}
+                @foreach (old('skills', ['']) as $skill)
+                    {{-- skills[]  mỗi khi form được gửi đi, dữ liệu từ các trường này sẽ được gửi dưới dạng một mảng của các giá trị skills --}}
+                    <input type="text" name="skills[]" value="{{ $skill }}">
+                @endforeach
+            @else
+                <input type="text" name="skills[]">
+            @endif
         </div>
+
+
         <button type="button" onclick="addSkillInput()">Add Another Skill</button><br>
         <button class="btn btn-primary" type="submit">Submit</button>
-       
+
     </form>
     <script>
         function addSkillInput() {

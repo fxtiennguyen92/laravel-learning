@@ -16,29 +16,35 @@ class ProjectController extends Controller
 
     public function store()
     {
-        // khkjgjhgjhgjhgjh 
         return view("admin.project.create");
     }
 
 
     public function create(Request $request)
     {
-        $validated = $request->validate([
-            'skills' => 'required|unique:posts|max:40|',
-            trans('validation.required', ['attribute' => 'Code']),
+        $request->validate([
+            'title' => 'required|max:255',
+            // * est chaque elt dans arr
+            'skills.*' => 'max:50',
+            'skills' => 'distinct', // nếu trùng skill sẽ tự động bỏ qua elt trùng
         ]);
-        // dd($request->all());
+
+        // Kiểm tra skills không trùng lặp
+        $skillsInput = $request->input('skills', []);
+        // loại bỏ các giá trị trùng lặp trong mảng
+        $uniqueSkills = array_unique($skillsInput);
+
         $project = Project::create([
             'title' => $request->input('title'),
-            'description'=> $request->input('description'),
+            'description' => $request->input('description'),
         ]);
-        $skillsInput = $request->input('skills');
-        // if skills is not an array, trans to array
-        $skillsArray = is_array($skillsInput) ? $skillsInput : [$skillsInput];
-        foreach ($skillsArray as $skillName) {
-            // if skill is new, create it
-            $skill = Skill::firstOrCreate(['name' => $skillName]);
-            $project->skills()->attach($skill);
+        
+        foreach ($uniqueSkills as $skillName) {
+            if (!empty($skillName)) {
+                // if skill is new, create it
+                $skill = Skill::firstOrCreate(['name' => $skillName]);
+                $project->skills()->attach($skill);
+            }
         }
         return redirect("projects");
     }
